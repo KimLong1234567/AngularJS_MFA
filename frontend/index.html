@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html ng-app="authApp">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ứng dụng Đăng nhập với MFA</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <!-- Thư viện AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <!-- Thư viện Angular Route -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+    <!-- Thư viện jQuery (dùng cho Bootstrap JS) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- Ứng dụng JavaScript -->
+    <script src="./app.js"></script>
+    <!-- CSS tùy chỉnh -->
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- nhieu diratic -->
+      <div ng-view></div>
+    </div>
+
+    <!-- Templates cho các trang -->
+    <script type="text/ng-template" id="login.html">
+      <div class="form-container">
+          <h2>Đăng nhập</h2>
+          <form name="loginForm" ng-submit="login()" novalidate>
+              <div class="form-group">
+                  <label>Email:</label>
+                  <input type="email" class="form-control" ng-model="loginData.user_email" required>
+              </div>
+              <div class="form-group">
+                  <label>Mật khẩu:</label>
+                  <input type="password" class="form-control" ng-model="loginData.user_password" required>
+              </div>
+              <button type="submit" class="btn btn-primary" ng-disabled="loginForm.$invalid">Đăng nhập</button>
+              <div class="alert alert-danger" ng-if="errorMessage">
+                  {{errorMessage}}
+              </div>
+          </form>
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="mfa.html">
+      <div class="form-container">
+          <h2>Xác thực Hai Yếu Tố (MFA)</h2>
+          <form name="mfaForm" ng-submit="verifyMFA()" novalidate>
+              <div class="form-group">
+                  <label>Mã MFA:</label>
+                  <input type="text" class="form-control" ng-model="mfaData.mfa_code" required>
+              </div>
+              <button type="submit" class="btn btn-success" ng-disabled="mfaForm.$invalid">Xác thực</button>
+              <div class="alert alert-danger" ng-if="errorMessage">
+                  {{errorMessage}}
+              </div>
+          </form>
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="dashboard.html">
+      <div class="form-container">
+          <h2>Chào mừng bạn đến Dashboard!</h2>
+          <p>Bạn đã đăng nhập thành công.</p>
+          <button class="btn btn-danger" ng-click="logout()">Đăng xuất</button>
+      </div>
+    </script>
+  </body>
+</html>
