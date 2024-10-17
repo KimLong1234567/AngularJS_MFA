@@ -36,7 +36,7 @@ const controller = {
         mfaCode,
         user.user_id,
       ]);
-      console.log(mfaCode);
+
       // Send MFA code to user's email
       await controller.sendMFAEmail(user.user_email, mfaCode);
 
@@ -52,19 +52,17 @@ const controller = {
   verifyMFA: async (req, res) => {
     try {
       const { user_id, mfa_code } = req.body;
-      console.log(user_id, mfa_code, 'hahah');
       const [rows] = await pool.query(
         'SELECT * FROM user WHERE user_id = ?',
         user_id
       );
       const user = rows[0];
-      console.log(user, { user });
       if (user.mfa_code != mfa_code) {
         return res.status(401).json({ message: 'MFA code is invalid.' });
       }
 
       // If valid, generate tokens
-      const secret = jwt + user.pass;
+      const secret = jwt + user.user_password;
       const shortToken = jwt.sign({ user_id: user.user_id }, secret, {
         expiresIn: '5m',
       });
@@ -88,10 +86,10 @@ const controller = {
   },
   sendMFAEmail: async (user_email, code) => {
     const transporter = nodemailer.createTransport({
-      service: 'gmail', // Use your email service
+      service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USERNAME, // Your email
-        pass: process.env.EMAIL_PASSWORD, // Your email password
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
       },
     });
 
